@@ -44,7 +44,6 @@ bool MyApp::OnInit()
     // ReSharper disable once CppDFAMemoryLeak
     auto *frame = new MyFrame();
     frame->SetIcon(wxICON(sample));
-    frame->Center(wxBOTH);
     frame->Show(true);
     frame->LoadPreferences();
     return true;
