@@ -1,15 +1,15 @@
 //
-// Created by janbu on 24.10.2025.
+// Text definitions
 //
 
 #pragma once
 
 #include <wx/wx.h>
 
-#define $APP_NAME "wxWidgets Template"
+#define $APP_NAME "wxTemplate"
 #define $APP_VERSION "v1.0"
 #define $APP_VENDOR "org.mycompany"
-#define $APP_AUTHOR_STRING "(w) 2025 John Doe"
+#define $APP_AUTHOR_STRING _("(w) 2025 John Doe")
 #define $APP_WELCOME_STRING _("Welcome to wxWidgets!")
 
 #define $MENU_FILE _("File")

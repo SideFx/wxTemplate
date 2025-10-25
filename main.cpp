@@ -9,6 +9,7 @@ class MyApp final : public wxApp
 {
 public:
     bool OnInit() override;
+    wxLocale locale;
 };
 
 wxIMPLEMENT_APP(MyApp);
@@ -44,6 +45,15 @@ private:
 
 bool MyApp::OnInit()
 {
+    auto lang = static_cast<wxLanguage>(wxLocale::GetSystemLanguage());
+    if (lang >= wxLANGUAGE_GERMAN && lang <= wxLANGUAGE_GERMAN_SWISS)
+    {
+        if (locale.Init(lang, wxLOCALE_LOAD_DEFAULT))
+        {
+            wxLocale::AddCatalogLookupPathPrefix(wxGetCwd() + "/locale");
+            locale.AddCatalog("de");
+        }
+    }
     // ReSharper disable once CppDFAMemoryLeak
     auto *frame = new MyFrame();
     frame->SetIcon(wxICON(sample));
@@ -213,7 +223,8 @@ void MyFrame::SavePreferences()
     config->Flush();
     delete config;
 }
-void MyFrame::LoadPreferences() {
+void MyFrame::LoadPreferences()
+{
     auto *config = new wxFileConfig("", "", configFileName,
         "", wxCONFIG_USE_LOCAL_FILE);
     const long sx = config->ReadLong($CONFIG_WINDOW_SIZE_X, wxDefaultSize.GetX());
