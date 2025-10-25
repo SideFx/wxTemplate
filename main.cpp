@@ -1,8 +1,9 @@
 #include <wx/wx.h>
+#include <wx/stdpaths.h>
 #include <wx/fileconf.h>
 #include <wx/event.h>
 #include "iconpool.h"
-#include "snippets.h"
+#include "definitions.h"
 
 class MyApp final : public wxApp
 {
@@ -37,6 +38,8 @@ private:
     void SavePreferences();
 
     const int toolBarIconSize = 18;
+    wxString configFileName;
+    wxString appTitle;
 };
 
 bool MyApp::OnInit()
@@ -49,7 +52,7 @@ bool MyApp::OnInit()
     return true;
 }
 
-MyFrame::MyFrame() : wxFrame(nullptr, wxID_ANY, wxString($APP_TITLE))
+MyFrame::MyFrame() : wxFrame(nullptr, wxID_ANY, "")
 {
     // ReSharper disable once CppDFAMemoryLeak
     auto *menuFile = new wxMenu;
@@ -81,7 +84,7 @@ MyFrame::MyFrame() : wxFrame(nullptr, wxID_ANY, wxString($APP_TITLE))
     menuBar->Append(menuHelp, $MENU_HELP);
     wxFrameBase::SetMenuBar(menuBar);
     wxFrameBase::CreateStatusBar();
-    wxFrameBase::SetStatusText($WELCOME);
+    wxFrameBase::SetStatusText($APP_WELCOME_STRING);
     Bind(wxEVT_MENU, &MyFrame::OnFileNew, this, wxID_NEW);
     Bind(wxEVT_MENU, &MyFrame::OnFileOpen, this, wxID_OPEN);
     Bind(wxEVT_MENU, &MyFrame::OnFileSave, this, wxID_SAVE);
@@ -132,7 +135,10 @@ MyFrame::MyFrame() : wxFrame(nullptr, wxID_ANY, wxString($APP_TITLE))
         IconPool::getBitmapBundleByName("FILE_QUIT_2", toolBarIconSize), $TIP_FILE_EXIT);
     toolBar->Realize();
     Bind(wxEVT_CLOSE_WINDOW, &MyFrame::OnClose, this);
-
+    configFileName = wxStandardPaths::Get().GetUserConfigDir() +
+        wxFileName::GetPathSeparator() + $APP_VENDOR + "." + $APP_NAME + ".ini";
+    appTitle = wxString($APP_NAME) + " "  + wxString($APP_VERSION );
+    wxFrameBase::SetTitle(appTitle);
 }
 
 void MyFrame::OnFileNew(wxCommandEvent& event)
@@ -198,8 +204,8 @@ void MyFrame::SavePreferences()
 {
     const auto pos = this->GetPosition();
     const auto size = this->GetSize();
-    auto *config = new wxFileConfig($APP_NAME,
-        $APP_VENDOR, "", "", wxCONFIG_USE_LOCAL_FILE);
+    auto *config = new wxFileConfig("", "", configFileName,
+        "", wxCONFIG_USE_LOCAL_FILE);
     config->Write(wxString($CONFIG_WINDOW_SIZE_X), size.x);
     config->Write(wxString($CONFIG_WINDOW_SIZE_Y), size.y);
     config->Write(wxString($CONFIG_WINDOW_POSITION_X), pos.x);
@@ -208,8 +214,8 @@ void MyFrame::SavePreferences()
     delete config;
 }
 void MyFrame::LoadPreferences() {
-    auto *config = new wxFileConfig($APP_NAME,
-        $APP_VENDOR, "", "", wxCONFIG_USE_LOCAL_FILE);
+    auto *config = new wxFileConfig("", "", configFileName,
+        "", wxCONFIG_USE_LOCAL_FILE);
     const long sx = config->ReadLong($CONFIG_WINDOW_SIZE_X, wxDefaultSize.GetX());
     const long sy = config->ReadLong($CONFIG_WINDOW_SIZE_Y, wxDefaultSize.GetY());
     const long px = config->ReadLong($CONFIG_WINDOW_POSITION_X, wxDefaultPosition.x);

@@ -8,10 +8,9 @@
 
 #define $APP_NAME "wxWidgets Template"
 #define $APP_VERSION "v1.0"
-#define $APP_VENDOR "org.janbuchholz"
-#define $APP_CONFIG ""
-#define $APP_TITLE wxString("wxWidgets Template") + " " + $APP_VERSION + " " + wxString("(w) 2025 Jan Buchholz")
-#define $WELCOME _("Welcome to wxWidgets!")
+#define $APP_VENDOR "org.mycompany"
+#define $APP_AUTHOR_STRING "(w) 2025 John Doe"
+#define $APP_WELCOME_STRING _("Welcome to wxWidgets!")
 
 #define $MENU_FILE _("File")
 #define $MENU_EDIT _("Edit")
